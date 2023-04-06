@@ -1,0 +1,185 @@
+//start mongoDB
+(base) don@don-25019:~/Desktop$ mongo
+MongoDB shell version v3.6.8
+connecting to: mongodb://127.0.0.1:27017
+Implicit session: session { "id" : UUID("35401a4d-fdf4-42d0-89b2-d01397acc0ba") }
+MongoDB server version: 3.6.8
+Server has startup warnings: 
+2023-04-06T15:09:18.698+0530 I STORAGE  [initandlisten] 
+2023-04-06T15:09:18.698+0530 I STORAGE  [initandlisten] ** WARNING: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine
+2023-04-06T15:09:18.698+0530 I STORAGE  [initandlisten] **          See http://dochub.mongodb.org/core/prodnotes-filesystem
+2023-04-06T15:09:20.147+0530 I CONTROL  [initandlisten] 
+2023-04-06T15:09:20.147+0530 I CONTROL  [initandlisten] ** WARNING: Access control is not enabled for the database.
+2023-04-06T15:09:20.147+0530 I CONTROL  [initandlisten] **          Read and write access to data and configuration is unrestricted.
+2023-04-06T15:09:20.147+0530 I CONTROL  [initandlisten] 
+
+//show databases present
+> show dbs
+admin      0.000GB
+config     0.000GB
+database1  0.000GB
+local      0.000GB
+
+//use database1
+> use database1
+switched to db database1
+
+//show the collections in database1 
+> show collections
+user
+
+//Print the documents of user collection
+> db.user.find()
+{ "_id" : ObjectId("642e9c7c8baaaadbe5cf2cf1"), "name" : "jyoti", "email" : "nkumar25019@gmail.com", "phone no" : 9671101877, "age" : 20, "salary" : 50000 }
+{ "_id" : 1, "name" : "jyoti", "email" : "nkumar25019@gmail.com", "phone no" : 9671101877, "age" : 20, "salary" : 50000 }
+
+//use pretty() method to beautify the documents
+> db.user.find().pretty()
+{
+	"_id" : ObjectId("642e9c7c8baaaadbe5cf2cf1"),
+	"name" : "jyoti",
+	"email" : "nkumar25019@gmail.com",
+	"phone no" : 9671101877,
+	"age" : 20,
+	"salary" : 50000
+}
+{
+	"_id" : 1,
+	"name" : "jyoti",
+	"email" : "nkumar25019@gmail.com",
+	"phone no" : 9671101877,
+	"age" : 20,
+	"salary" : 50000
+}
+
+//create one more collection that is user2
+> db.user2.insert( { "name":"sahil", "age":21, "location": "hisar" } )
+WriteResult({ "nInserted" : 1 })
+> db.user2.insert( { "name":"priya", "age":18, "location": "hisar" } )
+WriteResult({ "nInserted" : 1 })
+
+//print user2 collection
+> db.user2.find().pretty()
+{
+	"_id" : ObjectId("642eefdf6b31d7358aafc5ea"),
+	"name" : "sahil",
+	"age" : 21,
+	"location" : "hisar"
+}
+{
+	"_id" : ObjectId("642eeff66b31d7358aafc5eb"),
+	"name" : "priya",
+	"age" : 18,
+	"location" : "hisar"
+}
+
+//edit the id 
+> db.user2.insert( {"_id":2, "name":"priya", "age":18, "location": "hisar" } )
+WriteResult({ "nInserted" : 1 })
+> db.user2.insert( {"_id":1, "name":"sahil", "age":21, "location": "hisar" } )
+WriteResult({ "nInserted" : 1 })
+
+//print user2 collection after edit the id
+> db.user2.find().pretty()
+{
+	"_id" : ObjectId("642eefdf6b31d7358aafc5ea"),
+	"name" : "sahil",
+	"age" : 21,
+	"location" : "hisar"
+}
+{
+	"_id" : ObjectId("642eeff66b31d7358aafc5eb"),
+	"name" : "priya",
+	"age" : 18,
+	"location" : "hisar"
+}
+{ "_id" : 2, "name" : "priya", "age" : 18, "location" : "hisar" }
+{ "_id" : 1, "name" : "sahil", "age" : 21, "location" : "hisar" }
+
+
+//use deleteOne() method to delete one document which has id=2
+> db.user2.deleteOne({"_id":2})
+{ "acknowledged" : true, "deletedCount" : 1 }
+
+
+//print user2 collection after deletion
+> db.user2.find().pretty()
+{
+	"_id" : ObjectId("642eefdf6b31d7358aafc5ea"),
+	"name" : "sahil",
+	"age" : 21,
+	"location" : "hisar"
+}
+{
+	"_id" : ObjectId("642eeff66b31d7358aafc5eb"),
+	"name" : "priya",
+	"age" : 18,
+	"location" : "hisar"
+}
+{ "_id" : 1, "name" : "sahil", "age" : 21, "location" : "hisar" }
+
+> db.user2.insert( {"_id":2, "name":"sonia", "age":20, "location": "tohana" } )
+WriteResult({ "nInserted" : 1 })
+> db.user2.insert( {"_id":3, "name":"deepak", "age":17, "location": "tohana" } )
+
+WriteResult({ "nInserted" : 1 })
+
+//Use deleteMany() method:-
+> db.user2.deleteMany({"location":"tohana"})
+{ "acknowledged" : true, "deletedCount" : 2 }
+> db.user2.find().pretty()
+{
+	"_id" : ObjectId("642eefdf6b31d7358aafc5ea"),
+	"name" : "sahil",
+	"age" : 21,
+	"location" : "hisar"
+}
+{
+	"_id" : ObjectId("642eeff66b31d7358aafc5eb"),
+	"name" : "priya",
+	"age" : 18,
+	"location" : "hisar"
+}
+{ "_id" : 1, "name" : "sahil", "age" : 21, "location" : "hisar" }
+
+//use updateOne() method:-
+> db.user2.updateOne({},{$set:{"age":25}})
+{ "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
+> db.user2.find().pretty()
+{
+	"_id" : ObjectId("642eefdf6b31d7358aafc5ea"),
+	"name" : "sahil",
+	"age" : 25,
+	"location" : "hisar"
+}
+{
+	"_id" : ObjectId("642eeff66b31d7358aafc5eb"),
+	"name" : "priya",
+	"age" : 18,
+	"location" : "hisar"
+}
+{ "_id" : 1, "name" : "sahil", "age" : 21, "location" : "hisar" }
+
+
+//use updateMany() method:-
+> db.user2.updateMany({},{$inc:{"age":2}})
+{ "acknowledged" : true, "matchedCount" : 3, "modifiedCount" : 3 }
+> db.user2.find().pretty()
+{
+	"_id" : ObjectId("642eefdf6b31d7358aafc5ea"),
+	"name" : "sahil",
+	"age" : 27,
+	"location" : "hisar"
+}
+{
+	"_id" : ObjectId("642eeff66b31d7358aafc5eb"),
+	"name" : "priya",
+	"age" : 20,
+	"location" : "hisar"
+}
+{ "_id" : 1, "name" : "sahil", "age" : 23, "location" : "hisar" }
+
+
+
+
+
